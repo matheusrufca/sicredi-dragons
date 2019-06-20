@@ -1,5 +1,5 @@
 export interface Dragon {
-  id: string;
+  id: number | string;
   name: string;
   type: string;
   histories: string[];

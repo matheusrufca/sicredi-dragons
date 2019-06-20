@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { DragonService } from './dragon.service';
+import { DragonsService } from './dragon.service';
 
 describe('DragonService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [DragonService]
+      providers: [DragonsService]
     });
   });
 
-  it('should be created', inject([DragonService], (service: DragonService) => {
+  it('should be created', inject([DragonsService], (service: DragonsService) => {
     expect(service).toBeTruthy();
   }));
 });

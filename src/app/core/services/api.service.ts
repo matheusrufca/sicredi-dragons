@@ -16,7 +16,7 @@ export abstract class ApiService<T> {
     return this.httpClient.get<T[]>(apiEndpoint);
   }
 
-  fetchById(id: string): Observable<T> {
+  fetchById(id: number | string): Observable<T> {
     const apiEndpoint = `${this.API_URL}/${this.ENTITY_NAME}/${id}`;
     return this.httpClient.get<T>(apiEndpoint);
   }
@@ -26,12 +26,12 @@ export abstract class ApiService<T> {
     return this.httpClient.post<T>(apiEndpoint, payload);
   }
 
-  edit(id: string, payload?: Partial<T>): Observable<T> {
+  edit(id: number | string, payload?: Partial<T>): Observable<T> {
     const apiEndpoint = `${this.API_URL}/${this.ENTITY_NAME}/${id}`;
     return this.httpClient.put<T>(apiEndpoint, payload);
   }
 
-  remove(id: string): Observable<void> {
+  remove(id: number | string): Observable<void> {
     const apiEndpoint = `${this.API_URL}/${this.ENTITY_NAME}/${id}`;
     return this.httpClient.delete<void>(apiEndpoint);
   }

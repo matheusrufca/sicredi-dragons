@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
+import { map } from 'rxjs/operators';
+import { NotificationService } from 'src/app/core/services/notification.service';
 import { Dragon } from '../../models/dragon';
-import { DragonService } from '../../services/dragon.service';
 import { CreateDialogComponent } from './create-dialog/create-dialog.component';
 import { DragonTableItem } from './DragonTableItem';
 import { RemoveConfirmationDialogComponent } from './remove-confirmation-dialog/remove-confirmation-dialog.component';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { DragonsService } from '../../services/dragons.service';
 
 const TABLE_COLLUMNS = ['selection', 'name', 'type', 'createdAt', 'actions'];
 
@@ -26,7 +25,7 @@ export class ListDragonComponent implements OnInit {
   public selectAll: boolean = false;
 
   constructor(
-    private readonly dragonService: DragonService,
+    private readonly dragonService: DragonsService,
     public dialog: MatDialog,
     private readonly notificationService: NotificationService,
   ) {

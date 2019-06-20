@@ -27,7 +27,7 @@ const PREDEFINED_STORIES: Readonly<string[]> = [
 @Injectable({
   providedIn: 'root',
 })
-export class DragonService extends ApiService<Dragon> {
+export class DragonsService extends ApiService<Dragon> {
   // TODO: move to enviroment file
   protected readonly API_URL =
     'https://5c4b2a47aa8ee500142b4887.mockapi.io/api/v1';

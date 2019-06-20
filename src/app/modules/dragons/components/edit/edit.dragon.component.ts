@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { Dragon } from '../../models/dragon';
-import { DragonService } from '../../services/dragon.service';
+import { DragonsService } from '../../services/dragons.service';
 import { DragonForm } from './DragonForm';
 
 enum SaveActions {
@@ -29,7 +29,7 @@ export class EditDragonComponent implements OnInit {
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
-    private readonly dragonService: DragonService,
+    private readonly dragonService: DragonsService,
     private readonly notificationService: NotificationService,
   ) {}
 

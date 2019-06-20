@@ -5,12 +5,12 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { UserAuthService } from 'src/app/core/services/user-auth.service';
 import { EmailValidation } from 'src/app/core/validators/validators';
 import { SignInModel } from 'src/app/core/models/auth';
-import { SignInForm } from './signin-form';
+import { SignInForm } from './sign-in-form';
 
 @Component({
   selector: 'signin-form',
-  templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.scss']
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.scss']
 })
 
 export class SignInComponent implements OnInit {

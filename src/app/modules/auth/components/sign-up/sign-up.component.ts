@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { SignUpModel } from 'src/app/core/models/auth';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { UserAuthService } from 'src/app/core/services/user-auth.service';
 import { EmailValidation, MustMatch, PasswordValidation } from 'src/app/core/validators/validators';
-import { SignUpModel } from 'src/app/core/models/auth';
-import { SignUpForm } from './signup-form';
+import { SignUpForm } from './sign-up-form';
 
 @Component({
   selector: 'signup-form',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss']
+  templateUrl: './sign-up.component.html',
+  styleUrls: ['./sign-up.component.scss']
 })
-
 export class SignUpComponent implements OnInit {
   formSignup: SignUpForm;
 

@@ -1,5 +1,5 @@
 <div class="dragon-list-page" fxLayout="row" fxLayoutAlign="center center">
-  <mat-card fxFlex="80" fxFlex.xs="100">
+  <mat-card fxFlex>
     <mat-card-title>
       <h3>Dragons</h3>
       <div fxFlex></div>
@@ -45,8 +45,8 @@
             <td mat-cell *matCellDef="let item">
               <div fxHide.xs>{{item.data.name}}</div>
               <div fxHide fxShow.xs>
-                <a [routerLink]="['../edit', item.data.id]" class="display-block">{{item.data.name}}</a>
-                <small class="text-capitalize display-block">{{item.data.type}}</small>
+                <a [routerLink]="['../edit', item.data.id]" class="d-block">{{item.data.name}}</a>
+                <small class="text-capitalize d-block">{{item.data.type}}</small>
               </div>
             </td>
           </ng-container>

@@ -1,0 +1,30 @@
+@import '../vendors/bootstrap';
+
+.flex-row-center {
+  @extend .d-flex;
+  @extend .align-items-center;
+}
+
+a.disabled {
+  cursor: default;
+  i {
+    @extend .text-muted;
+  }
+}
+a.remove-decoration,
+a.remove-decoration:hover, /* OPTIONAL*/
+a.remove-decoration:visited,
+a.remove-decoration:focus {
+  color: unset !important;
+  text-decoration: none !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.d-flex {
+  @extend .align-items-center;
+}

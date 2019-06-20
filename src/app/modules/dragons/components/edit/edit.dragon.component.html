@@ -1,0 +1,61 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <mat-card fxFlex="40" fxFlex.md="50" fxFlex.sm="80" fxFlex.xs="100">
+    <mat-card-title>
+      <span>{{pageTitle()}}</span>
+      <div fxFlex></div>
+      <div class="action-buttons">
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+          <button mat-raised-button (click)="navigateToList()">
+            <mat-icon aria-label="Back">chevron_left</mat-icon>
+            <span>Back to list</span>
+          </button>
+        </div>
+      </div>
+    </mat-card-title>
+    <mat-card-content>
+      <form class="material-form" [formGroup]="dragonForm" (submit)="save()" id="dragonForm" [hidden]="$loading">
+        <mat-form-field>
+          <input matInput [(ngModel)]="dragon.name" formControlName="name" name="name" type="text" required placeholder="Name"
+            maxlength="50" />
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput
+                 [(ngModel)]="dragon.type"
+                 formControlName="type"
+                 [matAutocomplete]="auto"
+                 type="text"
+                 required
+                 placeholder="Dragon type"
+                 class="text-capitalize" />
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of availableDragonTypes" [value]="option" class="text-capitalize">{{option}}</mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select [(ngModel)]="dragon.histories" placeholder="Histories" formControlName="histories" multiple>
+            <mat-option *ngFor="let option of availableHistories" [value]="option">{{option}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="dragon.id">
+          <input matInput
+            value="{{dragon.createdAt.toDateString()}}"
+            type="text"
+            readonly
+            disabled
+            placeholder="Created at"
+            class="text-capitalize" />
+          </mat-form-field>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <div fxFlex></div>
+      <button mat-raised-button type="submit" color="primary" form="dragonForm">Save</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <div class="spinner-wrapper" fxFlex="20">
+    <mat-spinner *ngIf="$loading"></mat-spinner>
+  </div>
+</div>

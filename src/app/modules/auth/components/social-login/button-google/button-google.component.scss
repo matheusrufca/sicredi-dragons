@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+}
+
+.btn.social,
+.btn-large.social,
+.col.social {
+  font-size: 1rem;
+  padding: 1rem 2rem 1rem 0;
+}
+
+a.social {
+  cursor: pointer;
+  text-decoration: none;
+}

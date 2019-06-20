@@ -1,0 +1,26 @@
+.header-card.mat-card {
+  padding: 0;
+
+  .mat-card-header,
+  .mat-card-content,
+  .mat-card-actions:last-child {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .mat-card-header {
+    color: #FFFFFF;
+    background-color: #3F51B5;
+    text-transform: uppercase;
+
+    .mat-card-title {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.mat-card-title .action-buttons {
+  display: inline-flex;
+}

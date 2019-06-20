@@ -1,0 +1,13 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <div fxFlex="30" fxFlex.md="40" fxFlex.sm="80" fxFlex.xs="98">
+    <div class="auth-container">
+      <router-outlet></router-outlet>
+      <div class="divider" fxLayout="row" fxLayoutAlign="center center">
+        <mat-divider fxFlex></mat-divider>
+        <div fxFlex fxFlex.xs=50>Or login with</div>
+        <mat-divider fxFlex></mat-divider>
+      </div>
+      <social-login (afterLogin)="onSocialLogin($event)"></social-login>
+    </div>
+  </div>
+</div>

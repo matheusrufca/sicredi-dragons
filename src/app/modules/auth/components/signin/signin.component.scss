@@ -1,0 +1,10 @@
+:host {
+  .mat-card-actions {
+    > [fxLayout] {
+      padding: 16px 0;
+    }
+    > [fxLayout]:last-child {
+      padding-bottom: 0;
+    }
+  }
+}

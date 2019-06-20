@@ -1,0 +1,27 @@
+<mat-toolbar color="primary" class="fixed-header">
+  <mat-toolbar-row>
+    <button mat-raised-button color="primary" routerLink="/" routerLinkActive="active">
+      <mat-icon class="material-icons">home</mat-icon>
+      <span>Dashboard</span>
+    </button>
+    <div fxFlex></div>
+    <a mat-button routerLink="/login" *ngIf="!user">Login</a>
+    <button mat-raised-button color="primary" [matMenuTriggerFor]="profileMenu" *ngIf="user">
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+        <ngx-avatar src="{{getProfilePicture() | async}}" size="30"></ngx-avatar>
+        <span>{{user.displayName}}</span>
+        <mat-icon class="material-icons">more_vert</mat-icon>
+      </div>
+    </button>
+    <mat-menu #profileMenu="matMenu">
+      <!-- <button mat-menu-item routerLink="/profile">
+        <mat-icon class="material-icons">settings</mat-icon>
+        <span>Profile</span>
+      </button> -->
+      <button mat-menu-item (click)="logout()">
+        <mat-icon class="material-icons">logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>

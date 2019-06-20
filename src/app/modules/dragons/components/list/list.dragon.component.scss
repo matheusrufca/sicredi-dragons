@@ -1,0 +1,33 @@
+table.dragon-list-table {
+  width: 100%;
+
+  th {
+    font-weight: bold;
+  }
+
+  th.mat-header-cell.text-center {
+    text-align: center;
+  }
+
+  th:last-of-type {
+    width: 15%;
+  }
+}
+
+.action-buttons {
+  display: inline-flex;
+}
+
+.spinner-wrapper {
+  position: absolute;
+  width: auto;
+  margin-top: 15%;
+}
+
+.fab-button-bottom-right {
+  position: fixed;
+  margin: 15px;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}

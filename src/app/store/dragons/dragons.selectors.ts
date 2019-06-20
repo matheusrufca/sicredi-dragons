@@ -27,6 +27,13 @@ export const selectDragons = createSelector(
   selectors.selectAll,
 );
 
+export const selectDragon = createSelector(
+  selectDragonsState,
+  selectEntities,
+  (state, entities, id: number | string) =>
+    Object.keys(entities) ? entities[id] : null,
+);
+
 // select isLoading
 export const selectDragonsStateIsLoading = createIsLoadingSelector(
   selectDragonsState,

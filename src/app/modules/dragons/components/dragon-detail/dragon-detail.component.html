@@ -1,11 +1,14 @@
 <div fxLayout="row" fxLayoutAlign="center center">
+
+
+
   <mat-card fxFlex="40" fxFlex.md="50" fxFlex.sm="80" fxFlex.xs="100">
     <mat-card-title>
       <span>{{pageTitle()}}</span>
       <div fxFlex></div>
       <div class="action-buttons">
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-          <button mat-raised-button (click)="navigateToList()">
+          <button mat-raised-button routerLink="['../']">
             <mat-icon aria-label="Back">chevron_left</mat-icon>
             <span>Back to list</span>
           </button>
@@ -13,18 +16,35 @@
       </div>
     </mat-card-title>
     <mat-card-content>
-      <form class="material-form" [formGroup]="dragonForm" (submit)="save()" id="dragonForm" [hidden]="$loading">
+      <!-- SPINNER -->
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <div *ngIf="(isLoading$ | async)"
+             class="spinner-wrapper"
+             fxFlex="20">
+          <mat-spinner></mat-spinner>
+        </div>
+      </div>
+
+
+      <form class="material-form"
+            [formGroup]="entityForm"
+            (submit)="save()"
+            id="entityForm"
+            *ngIf="!(isLoading$ | async)">
+
+        <!-- NAME -->
         <mat-form-field>
-          <input matInput [(ngModel)]="dragon.name"
+          <input matInput
                  formControlName="name"
                  name="name"
-                 type="text" required
+                 type="text"
+                 required
                  placeholder="Name"
                  maxlength="50" />
         </mat-form-field>
+        <!-- DRAGON_TYPE -->
         <mat-form-field>
           <input matInput
-                 [(ngModel)]="dragon.type"
                  formControlName="type"
                  [matAutocomplete]="auto"
                  type="text"
@@ -32,38 +52,41 @@
                  placeholder="Dragon type"
                  class="text-capitalize" />
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let option of availableDragonTypes" [value]="option" class="text-capitalize">{{option}}
+            <mat-option *ngFor="let option of (availableDragonTypes$ | async)"
+                        [value]="option"
+                        class="text-capitalize">
+              {{option}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-
+        <!-- HISTORIES -->
         <mat-form-field>
-          <mat-select [(ngModel)]="dragon.histories"
-                      placeholder="Histories"
+          <mat-select placeholder="Histories"
                       formControlName="histories"
                       multiple>
-            <mat-option *ngFor="let option of availableHistories" [value]="option">{{option}}</mat-option>
+            <mat-option *ngFor="let option of (availableHistories$ | async)"
+                        [value]="option">
+              {{option}}
+            </mat-option>
           </mat-select>
         </mat-form-field>
-
-        <mat-form-field *ngIf="dragon.id">
+        <!-- CREATED_AT -->
+        <mat-form-field *ngIf="(dragon$ | async)">
           <input matInput
-                 value="{{dragon.createdAt | date}}"
+                 formControlName="createdAt"
+                 [value]="entityForm.value.createdAt | date"
                  type="text"
                  readonly
                  disabled
                  placeholder="Created at"
                  class="text-capitalize" />
         </mat-form-field>
+        <input formControlName="id" type="hidden" />
       </form>
     </mat-card-content>
     <mat-card-actions>
       <div fxFlex></div>
-      <button mat-raised-button type="submit" color="primary" form="dragonForm">Save</button>
+      <button mat-raised-button type="submit" color="primary" form="entityForm">Save</button>
     </mat-card-actions>
   </mat-card>
-
-  <div class="spinner-wrapper" fxFlex="20">
-    <mat-spinner *ngIf="$loading"></mat-spinner>
-  </div>
 </div>

@@ -40,10 +40,10 @@ const reducer = createReducer<DragonsState>(
             : DragonsAdapter.upsertMany(action.payload.result, state);
           break;
         case 'POST':
-          draft = DragonsAdapter.addOne(action.payload, state);
+          draft = DragonsAdapter.addOne(action.payload.result, state);
           break;
         case 'PUT':
-          draft = DragonsAdapter.upsertOne(action.payload, state);
+          draft = DragonsAdapter.upsertOne(action.payload.result, state);
           break;
       }
 

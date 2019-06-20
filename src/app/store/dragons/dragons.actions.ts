@@ -15,6 +15,12 @@ export const DragonsActions = {
       payload: Dragon;
     }>(),
   ),
+  edit: createAction(
+    '[Dragons] Edit',
+    props<{
+      payload: Dragon;
+    }>(),
+  ),
   remove: createAction(
     '[Dragons] Remove',
     props<{

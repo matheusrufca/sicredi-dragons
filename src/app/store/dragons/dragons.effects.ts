@@ -4,7 +4,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { interval, of } from 'rxjs';
-import { catchError, filter, map, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { Dragon } from '../../core/models/dragon';
 import { DragonsService } from '../../core/services/dragons.service';
 import { SharedActions } from '../shared.actions';
@@ -15,6 +15,7 @@ import {
   createRestoreEmptyEffect,
   createErrorEffect,
 } from '../effects';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class DragonsEffects {
@@ -22,6 +23,7 @@ export class DragonsEffects {
 
   constructor(
     private readonly actions$: Actions,
+    private readonly router: Router,
     private readonly notificationService: ToastrService,
     private readonly dragonsService: DragonsService,
   ) {}
@@ -49,12 +51,12 @@ export class DragonsEffects {
     ),
   );
 
+  @Effect()
   addDragon$ = this.actions$.pipe(
     ofType(DragonsActions.add),
     map((action) =>
       SharedActions.httpRequest({
         entity: this.featureName,
-        entityId: action.payload.id,
         operation: 'POST',
         payload: {
           payload: action.payload,
@@ -64,7 +66,22 @@ export class DragonsEffects {
   );
 
   @Effect()
-  fetchDragons$ = this.actions$.pipe(
+  editDragon$ = this.actions$.pipe(
+    ofType(DragonsActions.edit),
+    map((action) =>
+      SharedActions.httpRequest({
+        entity: this.featureName,
+        entityId: action.payload.id,
+        operation: 'PUT',
+        payload: {
+          payload: action.payload,
+        },
+      }),
+    ),
+  );
+
+  @Effect()
+  fromFetch$ = this.actions$.pipe(
     ofType(SharedActions.httpRequest),
     filter((action) => action.entity === this.featureName),
     filter((action) => action.operation === 'GET'),
@@ -73,7 +90,7 @@ export class DragonsEffects {
   );
 
   @Effect()
-  fetchDragon$ = this.actions$.pipe(
+  fromFetchDetail = this.actions$.pipe(
     ofType(SharedActions.httpRequest),
     filter((action) => action.entity === this.featureName),
     filter((action) => action.operation === 'GET'),
@@ -94,12 +111,28 @@ export class DragonsEffects {
   );
 
   @Effect()
-  deleteRemoved$ = this.actions$.pipe(
+  fromDelete$ = this.actions$.pipe(
     ofType(SharedActions.httpRequest),
     filter((action) => action.entity === this.featureName),
     filter((action) => action.operation === 'DELETE'),
     filter((action) => !!action.entityId),
-    switchMap((action) => this.removeDragon(action)),
+    switchMap((action) => this.remove(action)),
+  );
+
+  @Effect()
+  fromAdd$ = this.actions$.pipe(
+    ofType(SharedActions.httpRequest),
+    filter((action) => action.entity === this.featureName),
+    filter((action) => action.operation === 'POST'),
+    switchMap((action) => this.add(action)),
+  );
+
+  @Effect()
+  fromEdit$ = this.actions$.pipe(
+    ofType(SharedActions.httpRequest),
+    filter((action) => action.entity === this.featureName),
+    filter((action) => action.operation === 'PUT'),
+    switchMap((action) => this.edit(action)),
   );
 
   @Effect()
@@ -125,6 +158,16 @@ export class DragonsEffects {
     this.actions$,
     SharedActions.httpRequestFailed,
     (action) => this.notificationService.error(action.payload.errorMessage),
+  );
+
+  @Effect({ dispatch: false })
+  listRedirection$ = this.actions$.pipe(
+    ofType(SharedActions.httpRequestSucceed),
+    filter((action) => action.entity === this.featureName),
+    filter(
+      (action) => action.operation === 'POST' || action.operation === 'PUT',
+    ),
+    tap(() => this.router.navigate(['../list'])),
   );
 
   private fetchAll(action: HttpRequestAction<Dragon[]>) {
@@ -179,7 +222,7 @@ export class DragonsEffects {
     );
   }
 
-  private removeDragon(action: HttpRequestAction<Dragon>) {
+  private remove(action: HttpRequestAction<Dragon>) {
     return this.dragonsService.remove(action.entityId).pipe(
       map((result) =>
         SharedActions.httpRequestSucceed({
@@ -204,5 +247,59 @@ export class DragonsEffects {
         ),
       ),
     );
+  }
+
+  private add(action: HttpRequestAction<Dragon>) {
+    return this.dragonsService.create(action.payload.payload).pipe(
+      map((result) =>
+        SharedActions.httpRequestSucceed({
+          entity: this.featureName,
+          operation: 'POST',
+          payload: { result },
+        }),
+      ),
+      catchError((error) =>
+        of(
+          SharedActions.httpRequestFailed({
+            entity: this.featureName,
+            error: true,
+            operation: 'POST',
+            payload: {
+              errorMessage:
+                'Ocorreu um erro ao efetuar a operação. Por favor, tente novamente.',
+              source: error,
+            },
+          }),
+        ),
+      ),
+    );
+  }
+
+  private edit(action: HttpRequestAction<Dragon>) {
+    return this.dragonsService
+      .edit(action.entityId, action.payload.payload)
+      .pipe(
+        map((result) =>
+          SharedActions.httpRequestSucceed({
+            entity: this.featureName,
+            operation: 'PUT',
+            payload: { result },
+          }),
+        ),
+        catchError((error) =>
+          of(
+            SharedActions.httpRequestFailed({
+              entity: this.featureName,
+              error: true,
+              operation: 'PUT',
+              payload: {
+                errorMessage:
+                  'Ocorreu um erro ao efetuar a operação. Por favor, tente novamente.',
+                source: error,
+              },
+            }),
+          ),
+        ),
+      );
   }
 }

@@ -198,11 +198,11 @@ export class DragonsEffects {
   }
 
   private fetchDetail(action: HttpRequestAction<Dragon[]>) {
-    return this.dragonsService.fetchById(action.entityId).pipe(
+    return this.dragonsService.fetchById(action.entityId as string).pipe(
       map((result) =>
         SharedActions.httpRequestSucceed({
           entity: this.featureName,
-          entityId: action.entityId,
+          entityId: action.entityId as string,
           operation: 'GET',
           payload: { result },
         }),
@@ -211,7 +211,7 @@ export class DragonsEffects {
         of(
           SharedActions.httpRequestFailed({
             entity: this.featureName,
-            entityId: action.entityId,
+            entityId: action.entityId as string,
             error: true,
             operation: 'GET',
             payload: {
@@ -252,7 +252,7 @@ export class DragonsEffects {
 
   private edit(action: HttpRequestAction<Dragon>) {
     return this.dragonsService
-      .edit(action.entityId, action.payload.payload)
+      .edit(action.entityId as string, action.payload.payload)
       .pipe(
         map((result) =>
           SharedActions.httpRequestSucceed({

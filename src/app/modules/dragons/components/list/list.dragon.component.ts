@@ -67,7 +67,9 @@ export class ListDragonComponent implements OnInit, OnDestroy {
     this.showCreateDragonDialog();
   }
 
-  removeItem(item: DragonTableItem): void {}
+  removeItem(item: DragonTableItem): void {
+    this.store$.dispatch(DragonsActions.remove({ payload: item.data }));
+  }
 
   confirmRemoveItem(item: DragonTableItem): void {
     this.showRemoveConfirmationDialog(item);
@@ -114,12 +116,11 @@ export class ListDragonComponent implements OnInit, OnDestroy {
     } else {
       this.removeSelectedItems();
     }
-    this.refresh();
   }
 
   private removeSelectedItems(): void {
     const items = this.getSelected();
-    const removeItems$ = items.map((item) => this.removeItem(item));
+    items.map((item) => this.removeItem(item));
   }
 
   private showDialog(dialogComponent: any, settings?: any) {

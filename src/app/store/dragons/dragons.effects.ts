@@ -63,17 +63,6 @@ export class DragonsEffects {
     ),
   );
 
-  removeDragon$ = this.actions$.pipe(
-    ofType(DragonsActions.remove),
-    map((action) =>
-      SharedActions.httpRequest({
-        entity: this.featureName,
-        entityId: action.payload.id,
-        operation: 'DELETE',
-      }),
-    ),
-  );
-
   @Effect()
   fetchDragons$ = this.actions$.pipe(
     ofType(SharedActions.httpRequest),
@@ -90,6 +79,27 @@ export class DragonsEffects {
     filter((action) => action.operation === 'GET'),
     filter((action) => !!action.entityId),
     switchMap((action) => this.fetchDetail(action)),
+  );
+
+  @Effect()
+  removeDragon$ = this.actions$.pipe(
+    ofType(DragonsActions.remove),
+    map((action) =>
+      SharedActions.httpRequest({
+        entity: this.featureName,
+        entityId: action.payload.id,
+        operation: 'DELETE',
+      }),
+    ),
+  );
+
+  @Effect()
+  deleteRemoved$ = this.actions$.pipe(
+    ofType(SharedActions.httpRequest),
+    filter((action) => action.entity === this.featureName),
+    filter((action) => action.operation === 'DELETE'),
+    filter((action) => !!action.entityId),
+    switchMap((action) => this.removeDragon(action)),
   );
 
   @Effect()
@@ -161,6 +171,33 @@ export class DragonsEffects {
             operation: 'GET',
             payload: {
               errorMessage: 'Não foi posssível obter os detalhes do dragão.',
+              source: error,
+            },
+          }),
+        ),
+      ),
+    );
+  }
+
+  private removeDragon(action: HttpRequestAction<Dragon>) {
+    return this.dragonsService.remove(action.entityId).pipe(
+      map((result) =>
+        SharedActions.httpRequestSucceed({
+          entity: this.featureName,
+          entityId: action.entityId,
+          operation: 'DELETE',
+          payload: { result },
+        }),
+      ),
+      catchError((error) =>
+        of(
+          SharedActions.httpRequestFailed({
+            entity: this.featureName,
+            entityId: action.entityId,
+            error: true,
+            operation: 'DELETE',
+            payload: {
+              errorMessage: 'Não foi posssível concluir a operação.',
               source: error,
             },
           }),

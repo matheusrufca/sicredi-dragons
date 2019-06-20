@@ -15,6 +15,7 @@ import { SharedActions } from '../shared.actions';
 import { FeatureNames } from '../states';
 import { HttpRequestAction } from './../actions';
 import { DragonsActions } from './dragons.actions';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Injectable()
 export class DragonsEffects {
@@ -23,7 +24,7 @@ export class DragonsEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly router: Router,
-    private readonly notificationService: ToastrService,
+    private readonly notificationService: NotificationService,
     private readonly dragonsService: DragonsService,
   ) {}
 
@@ -158,7 +159,8 @@ export class DragonsEffects {
   error$ = createErrorEffect(
     this.actions$,
     SharedActions.httpRequestFailed,
-    (action) => this.notificationService.error(action.payload.errorMessage),
+    (action) =>
+      this.notificationService.notify(action.payload.errorMessage, 'error'),
   );
 
   @Effect({ dispatch: false })

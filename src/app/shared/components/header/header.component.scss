@@ -1,0 +1,9 @@
+@import '../../../../assets/stylesheets/abstracts/colors';
+
+a[mat-button] {
+  color: $white;
+  &:hover {
+    text-decoration: none;
+    color: $white;
+  }
+}

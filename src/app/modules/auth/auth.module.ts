@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { AuthRoutingModule } from './auth-routing.module';
@@ -22,6 +23,7 @@ import { SocialLoginComponent } from './components/social-login/social-login.com
     FormsModule,
     FormsModule,
     ReactiveFormsModule,
+    FlexLayoutModule,
     MaterialModule,
     AuthRoutingModule
   ],

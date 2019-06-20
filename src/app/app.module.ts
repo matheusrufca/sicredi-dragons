@@ -1,5 +1,5 @@
 import { LayoutModule } from '@angular/cdk/layout';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -13,6 +13,7 @@ import {
 } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { Store } from '@ngrx/store';
 import { AvatarModule } from 'ngx-avatar';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -27,13 +28,13 @@ import { SignInComponent } from './modules/auth/components/signin/signin.compone
 import { SignUpComponent } from './modules/auth/components/signup/signup.component';
 import { ButtonGoogleComponent } from './modules/auth/components/social-login/button-google/button-google.component';
 import { SocialLoginComponent } from './modules/auth/components/social-login/social-login.component';
-import { EditDragonComponent } from './modules/dragons/components/edit/edit.dragon.component';
 import { CreateDialogComponent } from './modules/dragons/components/list/create-dialog/create-dialog.component';
-import { ListDragonComponent } from './modules/dragons/components/list/list.dragon.component';
 import { RemoveConfirmationDialogComponent } from './modules/dragons/components/list/remove-confirmation-dialog/remove-confirmation-dialog.component';
 import { DragonsModule } from './modules/dragons/dragons.module';
 import { MaterialModule } from './modules/material.module';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
+import { SharedActions } from './store/shared.actions';
+import { FeatureNames, RootState } from './store/states';
 import { HeaderComponent } from './ui-components/header/header.component';
 
 @NgModule({
@@ -75,5 +76,22 @@ import { HeaderComponent } from './ui-components/header/header.component';
     DragonsModule,
   ],
   bootstrap: [AppComponent],
+  providers: [
+    {
+      deps: [Store],
+      multi: true,
+      provide: APP_INITIALIZER,
+      useFactory: initApp,
+    },
+  ],
 })
 export class AppModule {}
+
+export function initApp(store: Store<RootState>) {
+  return () =>
+    store.dispatch(
+      SharedActions.restore({
+        payload: FeatureNames.Dragons,
+      }),
+    );
+}

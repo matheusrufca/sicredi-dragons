@@ -1,8 +1,9 @@
+import { selectDragonsStateIsLoading } from './../../../../store/dragons/dragons.selectors';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
-import { map, takeUntil, filter } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { Dragon } from '../../../../core/models/dragon';
 import { DragonsActions } from '../../../../store/dragons/dragons.actions';
 import { selectDragons } from '../../../../store/dragons/dragons.selectors';
@@ -27,6 +28,7 @@ export class ListDragonComponent implements OnInit, OnDestroy {
   public dataTableSource: DragonsTable = new MatTableDataSource<
     DragonTableItem
   >([]);
+  public isLoading$: Observable<boolean>;
   public selectAll: boolean = false;
   private readonly unsubscribe: Subject<void> = new Subject<void>();
 
@@ -50,6 +52,8 @@ export class ListDragonComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         this.dataTableSource.data = result;
       });
+
+    this.isLoading$ = this.store$.select(selectDragonsStateIsLoading);
     this.dataTableSource.paginator = this.paginator;
   }
 

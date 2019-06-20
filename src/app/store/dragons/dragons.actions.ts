@@ -24,7 +24,7 @@ export const DragonsActions = {
   remove: createAction(
     '[Dragons] Remove',
     props<{
-      payload: Dragon;
+      payload: Dragon | Dragon[];
     }>(),
   ),
 };

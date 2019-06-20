@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
-import { interval, of } from 'rxjs';
+import { interval, of, forkJoin } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { Dragon } from '../../core/models/dragon';
 import { DragonsService } from '../../core/services/dragons.service';
@@ -104,7 +104,9 @@ export class DragonsEffects {
     map((action) =>
       SharedActions.httpRequest({
         entity: this.featureName,
-        entityId: action.payload.id,
+        entityId: Array.isArray(action.payload)
+          ? (action.payload.map((item) => item.id) as string[])
+          : action.payload.id,
         operation: 'DELETE',
       }),
     ),
@@ -222,33 +224,6 @@ export class DragonsEffects {
     );
   }
 
-  private remove(action: HttpRequestAction<Dragon>) {
-    return this.dragonsService.remove(action.entityId).pipe(
-      map((result) =>
-        SharedActions.httpRequestSucceed({
-          entity: this.featureName,
-          entityId: action.entityId,
-          operation: 'DELETE',
-          payload: { result },
-        }),
-      ),
-      catchError((error) =>
-        of(
-          SharedActions.httpRequestFailed({
-            entity: this.featureName,
-            entityId: action.entityId,
-            error: true,
-            operation: 'DELETE',
-            payload: {
-              errorMessage: 'Não foi posssível concluir a operação.',
-              source: error,
-            },
-          }),
-        ),
-      ),
-    );
-  }
-
   private add(action: HttpRequestAction<Dragon>) {
     return this.dragonsService.create(action.payload.payload).pipe(
       map((result) =>
@@ -301,5 +276,53 @@ export class DragonsEffects {
           ),
         ),
       );
+  }
+
+  private remove(action: HttpRequestAction<Dragon | Dragon[]>) {
+    if (Array.isArray(action.entityId)) {
+      const entitiesIds = action.entityId as string[];
+      const removes$ = entitiesIds.map((item) =>
+        this.dragonsService
+          .remove(item)
+          .pipe(catchError((error) => of({ error: true, entityId: item }))),
+      );
+
+      return forkJoin(removes$).pipe(
+        map((result: any) => result.filter((item) => !!item && !item.error)),
+        map((result) =>
+          SharedActions.httpRequestBatchSucceed({
+            entity: this.featureName,
+            entityId: result.map((item) => item.id),
+            operation: 'DELETE',
+            payload: { result },
+          }),
+        ),
+      );
+    }
+
+    return this.dragonsService.remove(action.entityId).pipe(
+      map((result) =>
+        SharedActions.httpRequestSucceed({
+          entity: this.featureName,
+          entityId: action.entityId as string,
+          operation: 'DELETE',
+          payload: { result },
+        }),
+      ),
+      catchError((error) =>
+        of(
+          SharedActions.httpRequestFailed({
+            entity: this.featureName,
+            entityId: action.entityId as string,
+            error: true,
+            operation: 'DELETE',
+            payload: {
+              errorMessage: 'Não foi posssível concluir a operação.',
+              source: error,
+            },
+          }),
+        ),
+      ),
+    );
   }
 }

@@ -50,6 +50,21 @@ const reducer = createReducer<DragonsState>(
       Object.assign(nextState, draft, { isFetching: false });
     });
   }),
+  on(SharedActions.httpRequestBatchSucceed, (state, action) => {
+    if (action.entity !== entityName) return cloneState(state);
+    return produce(state, (nextState) => {
+      let draft;
+
+      switch (action.operation) {
+        case 'DELETE':
+          const entityIds = action.entityId as string[];
+          draft = DragonsAdapter.removeMany(entityIds, state);
+          break;
+      }
+
+      Object.assign(nextState, draft, { isFetching: false });
+    });
+  }),
   on(SharedActions.httpRequestFailed, (state, action) =>
     action.entity === entityName
       ? cloneState(state, { isFetching: false })

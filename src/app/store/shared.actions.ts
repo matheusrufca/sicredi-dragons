@@ -1,18 +1,15 @@
 import { createAction, props } from '@ngrx/store';
-import {
-  HttpRequestAction,
-  HttpRequestFailedAction,
-  HttpRequestSucceedAction,
-  RestoreAction,
-  RestoreEmptyAction,
-  StoreAction,
-} from './actions';
+import { HttpRequestAction, HttpRequestBatchSucceedAction, HttpRequestFailedAction, HttpRequestSucceedAction, RestoreAction, RestoreEmptyAction, StoreAction } from './actions';
 
 export const SharedActions = {
   httpRequest: createAction('[Http] Request', props<HttpRequestAction<any>>()),
   httpRequestSucceed: createAction(
     '[Http] Request succeed',
     props<HttpRequestSucceedAction<any>>(),
+  ),
+  httpRequestBatchSucceed: createAction(
+    '[Http] Request batch succeed',
+    props<HttpRequestBatchSucceedAction<any>>(),
   ),
   httpRequestFailed: createAction(
     '[Http] Request failed',

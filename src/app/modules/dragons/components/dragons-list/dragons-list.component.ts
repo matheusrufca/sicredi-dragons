@@ -7,7 +7,7 @@ import { Dragon } from '../../../../core/models/dragon';
 import { DragonsActions } from '../../../../store/dragons/dragons.actions';
 import { selectDragons } from '../../../../store/dragons/dragons.selectors';
 import { RootState } from '../../../../store/states';
-import { DragonTableItem } from '../../models';
+import { DragonTableItem, TableItem } from '../../models';
 import { DragonDetailDialogComponent } from '../dragon-detail-dialog/dragon-detail-dialog.component';
 import { RemoveDragonConfirmationDialogComponent } from '../remove-dragon-confirmation-dialog/remove-dragon-confirmation-dialog.component';
 import { selectDragonsStateIsLoading } from './../../../../store/dragons/dragons.selectors';
@@ -19,9 +19,9 @@ type DragonsTable = MatTableDataSource<DragonTableItem>;
 @Component({
   selector: 'dragons-list',
   templateUrl: './dragons-list.component.html',
-  styleUrls: ['./dragons-list.component.scss']
+  styleUrls: ['./dragons-list.component.scss'],
 })
-export class DragonsListComponent implements OnInit,OnDestroy {
+export class DragonsListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public readonly tableColumns: string[];
@@ -71,10 +71,6 @@ export class DragonsListComponent implements OnInit,OnDestroy {
     this.showCreateDragonDialog();
   }
 
-  removeItem(item: DragonTableItem): void {
-    this.store$.dispatch(DragonsActions.remove({ payload: item.data }));
-  }
-
   confirmRemoveItem(item: DragonTableItem): void {
     this.showRemoveConfirmationDialog(item);
   }
@@ -84,12 +80,44 @@ export class DragonsListComponent implements OnInit,OnDestroy {
   }
 
   getSelected(): DragonTableItem[] {
-    return getSelected(this.dataTableSource.data);
+    return getSelected<Dragon>(this.dataTableSource.data);
   }
 
   ngOnDestroy() {
     this.unsubscribe.next();
     this.unsubscribe.complete();
+  }
+
+  private onCloseRemoveConfirmation(result: any, item?: DragonTableItem): void {
+    if (!result) return;
+
+    if (item) {
+      this.removeItem(item);
+    } else {
+      this.removeSelectedItems();
+    }
+  }
+
+  private removeItem(item: DragonTableItem): void {
+    this.store$.dispatch(DragonsActions.remove({ payload: item.data }));
+  }
+
+  private removeSelectedItems(): void {
+    const items = getSelected<Dragon>(this.dataTableSource.data).map(
+      (item) => item.data,
+    );
+    const selectedIds = items.map((item) => item.id);
+    this.store$.dispatch(
+      DragonsActions.remove({
+        payload: items,
+      }),
+    );
+  }
+
+  private showDialog(dialogComponent: any, settings?: any) {
+    const dialogSettings = Object.assign({}, settings || undefined);
+
+    return this.dialog.open(dialogComponent, dialogSettings);
   }
 
   private showCreateDragonDialog(): void {
@@ -111,30 +139,9 @@ export class DragonsListComponent implements OnInit,OnDestroy {
       .afterClosed()
       .subscribe((result) => this.onCloseRemoveConfirmation(result, item));
   }
-
-  private onCloseRemoveConfirmation(result: any, item?: DragonTableItem): void {
-    if (!result) return;
-
-    if (item) {
-      this.removeItem(item);
-    } else {
-      this.removeSelectedItems();
-    }
-  }
-
-  private removeSelectedItems(): void {
-    const items = this.getSelected();
-    items.map((item) => this.removeItem(item));
-  }
-
-  private showDialog(dialogComponent: any, settings?: any) {
-    const dialogSettings = Object.assign({}, settings || undefined);
-
-    return this.dialog.open(dialogComponent, dialogSettings);
-  }
 }
 
-function getSelected(items) {
+function getSelected<T>(items: TableItem<T>[]): TableItem<T>[] {
   if (!(Array.isArray(items) && items.length)) return [];
   return items.filter((item) => item.selected);
 }

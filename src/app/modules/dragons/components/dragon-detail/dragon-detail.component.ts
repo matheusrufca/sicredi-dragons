@@ -12,11 +12,11 @@ enum SaveActions {
 }
 
 @Component({
-  selector: 'edit-dragon',
-  templateUrl: './edit.dragon.component.html',
-  styleUrls: ['./edit.dragon.component.scss'],
+  selector: 'dragon-detail',
+  templateUrl: './dragon-detail.component.html',
+  styleUrls: ['./dragon-detail.component.scss'],
 })
-export class EditDragonComponent implements OnInit {
+export class DragonDetailComponent implements OnInit {
   public availableDragonTypes$: Observable<string[]>;
   public availableHistories$: Observable<string[]>;
   public dragon$: Observable<Dragon>;

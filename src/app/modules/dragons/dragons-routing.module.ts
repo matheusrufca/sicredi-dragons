@@ -1,19 +1,24 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { ListDragonComponent } from './components/list/list.dragon.component';
-import { EditDragonComponent } from './components/edit/edit.dragon.component';
+import { RouterModule, Routes } from '@angular/router';
+import { DragonDetailComponent } from './components/dragon-detail/dragon-detail.component';
+import { DragonsListComponent } from './components/dragons-list/dragons-list.component';
+import { DragonsComponent } from './dragons.component';
 
 const routes: Routes = [
   {
-    path: 'dragons', component: ListDragonComponent, canActivate: [],
+    path: 'dragons',
+    component: DragonsComponent,
     children: [
-      { path: 'create', component: EditDragonComponent },
-      { path: 'edit/:id', component: EditDragonComponent },
-    ]
-  }];
+      { path: 'create', component: DragonDetailComponent },
+      { path: 'edit/:id', component: DragonDetailComponent },
+      { path: 'list', component: DragonsListComponent },
+      { path: '**', redirectTo: 'list', pathMatch: 'full' },
+    ],
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DragonsRoutingModule { }
+export class DragonsRoutingModule {}

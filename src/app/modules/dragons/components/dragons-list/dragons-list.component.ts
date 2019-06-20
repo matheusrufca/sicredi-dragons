@@ -1,4 +1,3 @@
-import { selectDragonsStateIsLoading } from './../../../../store/dragons/dragons.selectors';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Store } from '@ngrx/store';
@@ -9,19 +8,20 @@ import { DragonsActions } from '../../../../store/dragons/dragons.actions';
 import { selectDragons } from '../../../../store/dragons/dragons.selectors';
 import { RootState } from '../../../../store/states';
 import { DragonTableItem } from '../../models';
-import { CreateDialogComponent } from './create-dialog/create-dialog.component';
-import { RemoveConfirmationDialogComponent } from './remove-confirmation-dialog/remove-confirmation-dialog.component';
+import { DragonDetailDialogComponent } from '../dragon-detail-dialog/dragon-detail-dialog.component';
+import { RemoveDragonConfirmationDialogComponent } from '../remove-dragon-confirmation-dialog/remove-dragon-confirmation-dialog.component';
+import { selectDragonsStateIsLoading } from './../../../../store/dragons/dragons.selectors';
 
 const TABLE_COLLUMNS = ['selection', 'name', 'type', 'createdAt', 'actions'];
 
 type DragonsTable = MatTableDataSource<DragonTableItem>;
 
 @Component({
-  selector: 'dragon-list',
-  templateUrl: './list.dragon.component.html',
-  styleUrls: ['./list.dragon.component.scss'],
+  selector: 'dragons-list',
+  templateUrl: './dragons-list.component.html',
+  styleUrls: ['./dragons-list.component.scss']
 })
-export class ListDragonComponent implements OnInit, OnDestroy {
+export class DragonsListComponent implements OnInit,OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public readonly tableColumns: string[];
@@ -93,7 +93,7 @@ export class ListDragonComponent implements OnInit, OnDestroy {
   }
 
   private showCreateDragonDialog(): void {
-    const dialogInstance = this.showDialog(CreateDialogComponent);
+    const dialogInstance = this.showDialog(DragonDetailDialogComponent);
     dialogInstance.afterClosed().subscribe((result) => {
       if (result) {
       }
@@ -103,7 +103,7 @@ export class ListDragonComponent implements OnInit, OnDestroy {
   private showRemoveConfirmationDialog(item?: DragonTableItem): void {
     const data = item ? item : undefined;
     const dialogInstance = this.showDialog(
-      RemoveConfirmationDialogComponent,
+      RemoveDragonConfirmationDialogComponent,
       data,
     );
 

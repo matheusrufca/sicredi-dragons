@@ -1,4 +1,3 @@
-import { LayoutModule } from '@angular/cdk/layout';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -18,7 +17,6 @@ import { AvatarModule } from 'ngx-avatar';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LoginComponent } from './modules/auth/components/login/login.component';
@@ -28,8 +26,6 @@ import { SignInComponent } from './modules/auth/components/signin/signin.compone
 import { SignUpComponent } from './modules/auth/components/signup/signup.component';
 import { ButtonGoogleComponent } from './modules/auth/components/social-login/button-google/button-google.component';
 import { SocialLoginComponent } from './modules/auth/components/social-login/social-login.component';
-import { CreateDialogComponent } from './modules/dragons/components/list/create-dialog/create-dialog.component';
-import { RemoveConfirmationDialogComponent } from './modules/dragons/components/list/remove-confirmation-dialog/remove-confirmation-dialog.component';
 import { DragonsModule } from './modules/dragons/dragons.module';
 import { MaterialModule } from './modules/material.module';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
@@ -47,16 +43,16 @@ import { HeaderComponent } from './ui-components/header/header.component';
     SignUpComponent,
     ButtonGoogleComponent,
     SocialLoginComponent,
-    HomeComponent,
     ResetPasswordComponent,
     ProfileComponent,
   ],
-  entryComponents: [RemoveConfirmationDialogComponent, CreateDialogComponent],
+  entryComponents: [],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserTransferStateModule,
-    AppRoutingModule,
-    CoreModule,
+    FormsModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
@@ -65,15 +61,13 @@ import { HeaderComponent } from './ui-components/header/header.component';
     ServiceWorkerModule.register('/ngsw-worker.js', {
       enabled: environment.production,
     }),
-    BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
     FlexLayoutModule,
     MaterialModule,
-    LayoutModule,
     AvatarModule,
-    AuthModule,
+    CoreModule,
     DragonsModule,
+    AuthModule,
+    AppRoutingModule,
   ],
   bootstrap: [AppComponent],
   providers: [

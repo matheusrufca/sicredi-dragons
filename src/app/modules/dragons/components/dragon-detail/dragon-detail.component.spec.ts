@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListDragonComponent } from './list.dragon.component';
+import { DragonDetailComponent } from './dragon-detail.component';
 
-describe('ListComponent', () => {
-  let component: ListDragonComponent;
-  let fixture: ComponentFixture<ListDragonComponent>;
+describe('DragonDetailComponent', () => {
+  let component: DragonDetailComponent;
+  let fixture: ComponentFixture<DragonDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListDragonComponent ]
+      declarations: [ DragonDetailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ListDragonComponent);
+    fixture = TestBed.createComponent(DragonDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

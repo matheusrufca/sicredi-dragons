@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { Dragon } from '../../models/dragon';
-import { DragonsService } from '../../services/dragons.service';
-import { DragonForm } from './DragonForm';
+import { Dragon } from '../../../../core/models/dragon';
+import { DragonsService } from '../../../../core/services/dragons.service';
+import { DragonForm } from '../../models';
 
 enum SaveActions {
   Create,
@@ -30,7 +29,6 @@ export class EditDragonComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
     private readonly dragonService: DragonsService,
-    private readonly notificationService: NotificationService,
   ) {}
 
   ngOnInit() {

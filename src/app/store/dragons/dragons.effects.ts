@@ -5,8 +5,8 @@ import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { interval, of } from 'rxjs';
 import { catchError, filter, map, switchMap } from 'rxjs/operators';
-import { Dragon } from '../../modules/dragons/models/dragon';
-import { DragonsService } from '../../modules/dragons/services/dragons.service';
+import { Dragon } from '../../core/models/dragon';
+import { DragonsService } from '../../core/services/dragons.service';
 import { SharedActions } from '../shared.actions';
 import { FeatureNames, RootState } from '../states';
 import { DragonsActions } from './dragons.actions';
@@ -27,24 +27,67 @@ export class DragonsEffects {
   ) {}
 
   @Effect()
+  load$ = this.actions$.pipe(
+    ofType(DragonsActions.load),
+    map((action) =>
+      SharedActions.httpRequest({
+        entity: this.featureName,
+        operation: 'GET',
+      }),
+    ),
+  );
+
+  @Effect()
+  loadDetail$ = this.actions$.pipe(
+    ofType(DragonsActions.loadDetail),
+    map((action) =>
+      SharedActions.httpRequest({
+        entity: this.featureName,
+        entityId: action.payload,
+        operation: 'GET',
+      }),
+    ),
+  );
+
+  addDragon$ = this.actions$.pipe(
+    ofType(DragonsActions.add),
+    map((action) =>
+      SharedActions.httpRequest({
+        entity: this.featureName,
+        entityId: action.payload.id,
+        operation: 'POST',
+        payload: {
+          payload: action.payload,
+        },
+      }),
+    ),
+  );
+
+  removeDragon$ = this.actions$.pipe(
+    ofType(DragonsActions.remove),
+    map((action) =>
+      SharedActions.httpRequest({
+        entity: this.featureName,
+        entityId: action.payload.id,
+        operation: 'DELETE',
+      }),
+    ),
+  );
+
+  @Effect()
   fetchDragons$ = this.actions$.pipe(
     ofType(SharedActions.httpRequest),
     filter((action) => action.entity === this.featureName),
+    filter((action) => action.operation === 'GET'),
     filter((action) => !action.entityId),
     switchMap((action) => this.fetchAll(action)),
-    map((result) =>
-      SharedActions.httpRequestSucceed({
-        entity: this.featureName,
-        operation: 'GET',
-        payload: { result },
-      }),
-    ),
   );
 
   @Effect()
   fetchDragon$ = this.actions$.pipe(
     ofType(SharedActions.httpRequest),
     filter((action) => action.entity === this.featureName),
+    filter((action) => action.operation === 'GET'),
     filter((action) => !!action.entityId),
     switchMap((action) => this.fetchDetail(action)),
   );

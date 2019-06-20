@@ -20,13 +20,6 @@ const routes: Routes = [
       { path: '**', redirectTo: 'signin', pathMatch: 'full' },
     ]
   },
-  {
-    path: 'dragons', component: ListDragonComponent, canActivate: [],
-    children: [
-      { path: 'create', component: EditDragonComponent },
-      { path: 'edit/:id', component: EditDragonComponent },
-    ]
-  },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

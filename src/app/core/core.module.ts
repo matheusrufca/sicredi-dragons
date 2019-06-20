@@ -1,3 +1,4 @@
+import { ApiService } from 'src/app/core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -12,7 +13,8 @@ import { reducers } from '../store/store.reducers';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { NotificationService } from './services/notification.service';
-
+import { DragonsService } from './services/dragons.service';
+import { PublicGuard } from './guards/public.guard';
 
 @NgModule({
   imports: [
@@ -30,6 +32,12 @@ import { NotificationService } from './services/notification.service';
     EffectsModule.forRoot([DragonsEffects]),
     StoreDevtoolsModule.instrument(),
   ],
-  providers: [AuthService, AuthGuard, NotificationService],
+  providers: [
+    AuthService,
+    DragonsService,
+    NotificationService,
+    AuthGuard,
+    PublicGuard,
+  ],
 })
 export class CoreModule {}

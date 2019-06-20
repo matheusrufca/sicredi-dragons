@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import produce from 'immer';
-import { Dragon } from '../../modules/dragons/models/dragon';
+import { Dragon } from '../../core/models/dragon';
 import { SharedActions } from '../shared.actions';
 import { FeatureNames, StoreState } from '../states';
 import { cloneState } from '../store.utils';
@@ -36,8 +36,8 @@ const reducer = createReducer<DragonsState>(
           break;
         case 'GET':
           draft = !!action.entityId
-            ? DragonsAdapter.upsertOne(action.payload, state)
-            : DragonsAdapter.upsertMany(action.payload, state);
+            ? DragonsAdapter.upsertOne(action.payload.result, state)
+            : DragonsAdapter.upsertMany(action.payload.result, state);
           break;
         case 'POST':
           draft = DragonsAdapter.addOne(action.payload, state);
@@ -50,7 +50,7 @@ const reducer = createReducer<DragonsState>(
       Object.assign(nextState, draft, { isFetching: false });
     });
   }),
-  on(SharedActions.httpRequestSucceed, (state, action) =>
+  on(SharedActions.httpRequestFailed, (state, action) =>
     action.entity === entityName
       ? cloneState(state, { isFetching: false })
       : cloneState(state),
@@ -77,7 +77,6 @@ const reducer = createReducer<DragonsState>(
       ? cloneState(state, { isLoading: false })
       : cloneState(state),
   ),
-  on(SharedActions.restore, (state) => cloneState(state)),
   on(SharedActions.refresh, (state, action) =>
     action.payload === FeatureNames.Dragons
       ? cloneState(state, { isFetching: true })

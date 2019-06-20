@@ -18,7 +18,7 @@
       </div>
     </mat-card-title>
     <mat-card-content>
-      <table [hidden]="$loading" class="dragon-list-table" mat-table [dataSource]="items">
+      <table [hidden]="$loading" class="dragon-list-table" mat-table [dataSource]="dataTableSource">
         <!-- selection column -->
         <ng-container matColumnDef="selection">
           <th mat-header-cell *matHeaderCellDef class="text-center" fxHide.xs fxHide.sm>

@@ -1,61 +1,73 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
-import { map } from 'rxjs/operators';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { Dragon } from '../../models/dragon';
+import { Store } from '@ngrx/store';
+import { Subject } from 'rxjs';
+import { map, takeUntil, filter } from 'rxjs/operators';
+import { Dragon } from '../../../../core/models/dragon';
+import { DragonsActions } from '../../../../store/dragons/dragons.actions';
+import { selectDragons } from '../../../../store/dragons/dragons.selectors';
+import { RootState } from '../../../../store/states';
+import { DragonTableItem } from '../../models';
 import { CreateDialogComponent } from './create-dialog/create-dialog.component';
-import { DragonTableItem } from './DragonTableItem';
 import { RemoveConfirmationDialogComponent } from './remove-confirmation-dialog/remove-confirmation-dialog.component';
-import { DragonsService } from '../../services/dragons.service';
 
 const TABLE_COLLUMNS = ['selection', 'name', 'type', 'createdAt', 'actions'];
+
+type DragonsTable = MatTableDataSource<DragonTableItem>;
 
 @Component({
   selector: 'dragon-list',
   templateUrl: './list.dragon.component.html',
   styleUrls: ['./list.dragon.component.scss'],
 })
-export class ListDragonComponent implements OnInit {
+export class ListDragonComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public readonly tableColumns: string[];
-  public items: MatTableDataSource<DragonTableItem> = new MatTableDataSource<
+  public dataTableSource: DragonsTable = new MatTableDataSource<
     DragonTableItem
   >([]);
   public selectAll: boolean = false;
+  private readonly unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
-    private readonly dragonService: DragonsService,
+    private readonly store$: Store<RootState>,
     public dialog: MatDialog,
-    private readonly notificationService: NotificationService,
   ) {
     this.tableColumns = TABLE_COLLUMNS;
   }
 
   ngOnInit(): void {
-    this.items.paginator = this.paginator;
-    this.loadDragons();
+    this.store$.dispatch(DragonsActions.load());
+    this.store$
+      .select(selectDragons)
+      .pipe(
+        takeUntil(this.unsubscribe),
+        filter((entities) => Array.isArray(entities) && !!entities.length),
+        map((entities) => entities.sort(sortDragons)),
+        map((entities) => entities.map(tableItemAdapter)),
+      )
+      .subscribe((result) => {
+        this.dataTableSource.data = result;
+      });
+    this.dataTableSource.paginator = this.paginator;
   }
 
   refresh(): void {
-    this.loadDragons();
+    this.store$.dispatch(DragonsActions.load());
   }
 
   toggleSelectAll(): void {
-    this.items.data.forEach((item) => (item.selected = this.selectAll));
+    this.dataTableSource.data.forEach(
+      (item) => (item.selected = this.selectAll),
+    );
   }
 
   addItem(): void {
     this.showCreateDragonDialog();
   }
 
-  removeItem(item: DragonTableItem) {
-    try {
-      this.dragonService.remove(item.data.id);
-    } catch (error) {
-      throw error;
-    }
-  }
+  removeItem(item: DragonTableItem): void {}
 
   confirmRemoveItem(item: DragonTableItem): void {
     this.showRemoveConfirmationDialog(item);
@@ -66,19 +78,12 @@ export class ListDragonComponent implements OnInit {
   }
 
   getSelected(): DragonTableItem[] {
-    return getSelected(this.items.data);
+    return getSelected(this.dataTableSource.data);
   }
 
-  private loadDragons(): void {
-    this.dragonService
-      .fetchAll()
-      .pipe(
-        map((entities) => entities.sort(sortDragons)),
-        map((entities) => entities.map(tableItemAdapter)),
-      )
-      .subscribe((entities) => {
-        this.items.data = entities;
-      });
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   private showCreateDragonDialog(): void {

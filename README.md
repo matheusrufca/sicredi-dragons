@@ -15,10 +15,10 @@
 ## Implementação
 
 Esse projeto foi criado a partir de um fork do repositório [angular-firestarter](https://github.com/codediodeio/angular-firestarter) 
-por conveniencia e estrutura e configuração de projeto.
+por conveniencia, estrutura e configuração de projeto.
 
 Alguns componentes relativos ao login e notificação foram alterados e os componentes não utilizados foram removidos.
 
-Em cima dele foi desenvolvido todas as páginas da aplicação utilizando a lib angular-material.
+Em cima dele foi desenvolvido todas as páginas da aplicação utilizando a lib [angular-material](https://material.angular.io/) e o fluxo de dados utilizando o padrão redux através da lib [@ngrx/store](https://ngrx.io/guide/store).
 
-Devido ao tempo reduzido, dediquei maior parte do tempo a escrita de código limpo, porém ainda há alguns débitos técnicos identificados, como testes unitários, melhor reutilização de classes css, utilização de herança em alguns componentes com comportamentos semelhantes.
+Dediquei o tempo no desenvolvimento das features, login, crud de dragões, visualização offline, gostaria de ter implementado os testes unitários mas não houve tempo suficiente.

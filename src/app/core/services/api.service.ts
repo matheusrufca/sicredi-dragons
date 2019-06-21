@@ -6,10 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export abstract class ApiService<T> {
-  protected abstract readonly API_URL;
-  protected abstract readonly ENTITY_NAME;
+  protected abstract readonly API_URL: string;
+  protected abstract readonly ENTITY_NAME: string;
 
-  constructor(protected readonly httpClient: HttpClient) {}
+  constructor(protected readonly httpClient: HttpClient) { }
 
   fetchAll(): Observable<T[]> {
     const apiEndpoint = `${this.API_URL}/${this.ENTITY_NAME}`;
